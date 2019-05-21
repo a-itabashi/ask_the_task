@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :favorite do
     task { nil }
-    label { nil }
+    label { "" }
   end
 end

@@ -31,12 +31,18 @@ class TasksController < ApplicationController
   end
 
   def create
-    binding.pry
-    @task = Task.new(task_params)
-    @task.user_id = current_user.id
-    # @labels = @task.favorites.find_by(label_id: params[:id])
+    @task = current_user.tasks.build(task_params)
+    @labels = params[:task][:label_ids]
+    @favorite = @task.favorites
     if @task.save
-      redirect_to tasks_path(@task.id) , notice: 'タスクを作成'
+      if @labels
+      i = 0
+      while i < @labels.length  do
+        @favorite.create(label_id: @labels[i])
+        i += 1
+      end
+      redirect_to tasks_path , notice: 'タスクを作成'
+    end
     else
       render 'new'
     end
@@ -62,7 +68,7 @@ class TasksController < ApplicationController
   private
   
   def task_params
-    params.require(:task).permit(:title, :content, :deadline, :priority, :status, :user_id, label_ids:[])
+    params.require(:task).permit(:title, :content, :deadline, :priority, :status, :user_id)
   end
 
   def set_task
