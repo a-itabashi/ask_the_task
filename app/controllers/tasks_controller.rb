@@ -35,14 +35,14 @@ class TasksController < ApplicationController
     @labels = params[:task][:label_ids]
     @favorite = @task.favorites
     if @task.save
-      if @labels
-      i = 0
-      while i < @labels.length  do
-        @favorite.create(label_id: @labels[i])
-        i += 1
+      if @labels.present?
+         i = 0
+         while i < @labels.length  do
+            @favorite.create(label_id: @labels[i])
+            i += 1
+         end
       end
       redirect_to tasks_path , notice: 'タスクを作成'
-    end
     else
       render 'new'
     end
@@ -68,7 +68,7 @@ class TasksController < ApplicationController
   private
   
   def task_params
-    params.require(:task).permit(:title, :content, :deadline, :priority, :status, :user_id)
+    params.require(:task).permit(:title, :content, :deadline, :priority, :status, :user_id, labels_ids:[])
   end
 
   def set_task
